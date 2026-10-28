@@ -1,0 +1,8 @@
+{
+  "name": "star-map-app",
+  "private": true,
+  "description": "指定した場所・日時から見える星と星座を表示する静的Webアプリ",
+  "scripts": {
+    "test": "node --test test/astro.test.js"
+  }
+}

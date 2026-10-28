@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b1a">
+  <title>星空マップ — いつでも・どこでも見える星座</title>
+  <meta name="description" content="指定した場所・日時に見える星と星座を表示する全天星図アプリ">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>星空マップ</h1>
+    <p class="subtitle" id="summary">読み込み中…</p>
+  </header>
+
+  <main class="layout">
+    <section class="map-panel" aria-label="全天星図">
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="sky" role="img" aria-label="全天星図。タップすると星や星座の情報を表示します"></canvas>
+      </div>
+      <p class="map-hint">頭上にかざして、方角を合わせて見てください（上が北・左が東）。星や星座をタップすると詳しい情報が出ます。</p>
+
+      <div class="time-bar">
+        <div class="time-buttons">
+          <button type="button" data-shift="-1440" title="1日戻す">−1日</button>
+          <button type="button" data-shift="-60" title="1時間戻す">−1時間</button>
+          <button type="button" id="nowBtn" class="primary">現在</button>
+          <button type="button" data-shift="60" title="1時間進める">+1時間</button>
+          <button type="button" data-shift="1440" title="1日進める">+1日</button>
+          <button type="button" id="playBtn" aria-pressed="false" title="時間を早送り">▶ 再生</button>
+        </div>
+        <label class="slider-row">
+          <span class="slider-label">時刻を動かす</span>
+          <input type="range" id="timeSlider" min="-720" max="720" step="5" value="0" aria-describedby="sliderValue">
+          <output id="sliderValue">±0分</output>
+        </label>
+      </div>
+
+      <div class="info" id="info" aria-live="polite">
+        <p class="muted">星や星座をタップしてください。</p>
+      </div>
+    </section>
+
+    <aside class="side-panel">
+      <details open class="card">
+        <summary>場所</summary>
+        <label class="field">
+          <span>都市から選ぶ</span>
+          <select id="citySelect"></select>
+        </label>
+        <div class="field-row">
+          <label class="field">
+            <span>緯度（北が＋）</span>
+            <input type="number" id="latInput" step="0.0001" min="-90" max="90" inputmode="decimal">
+          </label>
+          <label class="field">
+            <span>経度（東が＋）</span>
+            <input type="number" id="lonInput" step="0.0001" min="-180" max="180" inputmode="decimal">
+          </label>
+        </div>
+        <button type="button" id="geoBtn">📍 現在地を使う</button>
+        <p class="muted small" id="geoStatus"></p>
+      </details>
+
+      <details open class="card">
+        <summary>日時</summary>
+        <label class="field">
+          <span>日時（下のタイムゾーンでの時刻）</span>
+          <input type="datetime-local" id="dateInput">
+        </label>
+        <label class="field">
+          <span>タイムゾーン</span>
+          <select id="tzSelect"></select>
+        </label>
+      </details>
+
+      <details open class="card">
+        <summary>表示</summary>
+        <label class="check"><input type="checkbox" id="optLines" checked> 星座線</label>
+        <label class="check"><input type="checkbox" id="optConNames" checked> 星座名</label>
+        <label class="check"><input type="checkbox" id="optStarNames" checked> 明るい星の名前</label>
+        <label class="check"><input type="checkbox" id="optGrid" checked> 高度・方位の目盛り</label>
+        <label class="check"><input type="checkbox" id="optRed"> 夜間モード（赤い画面で目を暗さに慣らしたまま見る）</label>
+        <label class="field">
+          <span>表示する星の明るさ: <output id="magValue">5.0</output> 等級まで</span>
+          <input type="range" id="magSlider" min="1" max="5" step="0.5" value="5">
+        </label>
+      </details>
+
+      <details open class="card">
+        <summary>いま見える星座 <span class="muted small" id="visibleCount"></span></summary>
+        <ol class="con-list" id="conList"></ol>
+      </details>
+    </aside>
+  </main>
+
+  <footer class="app-footer">
+    <p>星データ: Yale Bright Star Catalogue 5th ed. ／ 星座線・星座名: <a href="https://github.com/ofrohn/d3-celestial">d3-celestial</a> (BSD-3-Clause)。大気差は考慮していません。</p>
+  </footer>
+
+  <script src="data/stars.js"></script>
+  <script src="data/constellations.js"></script>
+  <script src="js/astro.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
